@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Hunting (Artemis 2.Pam)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --purple:#7F77DD;--purple-bg:#EEEDFE;--purple-text:#3C3489;
+  --teal:#1D9E75;--teal-bg:#E1F5EE;--teal-text:#085041;
+  --amber:#BA7517;--amber-bg:#FAEEDA;--amber-text:#633806;
+  --coral:#D85A30;--coral-bg:#FAECE7;--coral-text:#712B13;
+  --blue:#378ADD;--blue-bg:#E6F1FB;--blue-text:#0C447C;
+  --pink:#D4537E;--pink-bg:#FBEAF0;--pink-text:#72243E;
+  --green:#639922;--green-bg:#EAF3DE;--green-text:#27500A;
+  --border:#e0ddd8;
+  --r:8px;--rl:12px;
+  --bg:#ffffff;--bg2:#f7f6f3;
+  --text:#1a1a1a;--text2:#6b6b6b;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--text);background:#f4f2ee;min-height:100vh;padding:0;}
+
+/* HEADER */
+header{background:var(--purple-text);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;}
+header h1{font-size:18px;font-weight:600;color:#fff;letter-spacing:-.01em;}
+header span{font-size:12px;color:#a89fd8;}
+
+/* WRAPPER */
+.wrapper{max-width:1100px;margin:0 auto;padding:24px 24px;}
+
+/* NAV */
+nav{display:flex;gap:2px;border-bottom:1.5px solid var(--border);margin-bottom:1.5rem;background:var(--bg);border-radius:var(--rl) var(--rl) 0 0;padding:0 16px;}
+nav button{background:none;border:none;padding:12px 20px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:all .15s;}
+nav button.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:600;}
+nav button:hover:not(.active){color:var(--text);}
+
+/* CONTENT CARD */
+.content-card{background:var(--bg);border-radius:0 0 var(--rl) var(--rl);padding:24px;border:1px solid var(--border);border-top:none;}
+
+.panel{display:none;}.panel.active{display:block;}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem;}
+.stat-card{border-radius:var(--rl);padding:16px;}
+.sc-purple{background:var(--purple-bg);}.sc-teal{background:var(--teal-bg);}.sc-amber{background:var(--amber-bg);}.sc-coral{background:var(--coral-bg);}.sc-blue{background:var(--blue-bg);}
+.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.sc-purple .stat-label{color:var(--purple-text);}.sc-teal .stat-label{color:var(--teal-text);}.sc-amber .stat-label{color:var(--amber-text);}.sc-coral .stat-label{color:var(--coral-text);}.sc-blue .stat-label{color:var(--blue-text);}
+.stat-value{font-size:30px;font-weight:600;}
+.sc-purple .stat-value{color:var(--purple-text);}.sc-teal .stat-value{color:var(--teal-text);}.sc-amber .stat-value{color:var(--amber-text);}.sc-coral .stat-value{color:var(--coral-text);}.sc-blue .stat-value{color:var(--blue-text);}
+.stat-sub{font-size:11px;margin-top:3px;color:var(--text2);}
+
+/* PIPELINE */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1.5rem;}
+.pipe-stage{border-radius:var(--r);padding:14px;text-align:center;}
+.ps-purple{background:var(--purple-bg);}.ps-amber{background:var(--amber-bg);}.ps-blue{background:var(--blue-bg);}.ps-teal{background:var(--teal-bg);}.ps-green{background:var(--green-bg);}
+.pipe-stage .num{font-size:24px;font-weight:700;}
+.ps-purple .num{color:var(--purple-text);}.ps-amber .num{color:var(--amber-text);}.ps-blue .num{color:var(--blue-text);}.ps-teal .num{color:var(--teal-text);}.ps-green .num{color:var(--green-text);}
+.pipe-stage .lbl{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500;}
+
+.section-title{font-size:17px;font-weight:600;margin-bottom:1rem;color:var(--text);}
+.sub-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-row.full{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:12px;font-weight:600;color:var(--text2);}
+.field input,.field select,.field textarea{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);outline:none;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple);background:#fff;}
+.field input.err{border-color:#E24B4A;}
+.err-msg{font-size:11px;color:#A32D2D;margin-top:2px;}
+
+/* STAGES */
+.stages-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;}
+.stage-item{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:var(--r);padding:9px 12px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.stage-item.phone-done{border-color:var(--amber);background:var(--amber-bg);}
+.stage-item.r1-done{border-color:var(--blue);background:var(--blue-bg);}
+.stage-item.r2-done{border-color:var(--purple);background:var(--purple-bg);}
+.stage-item.offer-done{border-color:var(--teal);background:var(--teal-bg);}
+.stage-item.extra-done{border-color:var(--coral);background:var(--coral-bg);}
+.stage-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--purple);}
+.stage-item span{font-size:12px;font-weight:500;}
+
+/* BUTTONS */
+.btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:var(--r);padding:9px 18px;cursor:pointer;transition:all .15s;background:var(--bg);color:var(--text);}
+.btn:hover{background:var(--bg2);}
+.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple);}
+.btn.primary:hover{background:var(--purple-text);border-color:var(--purple-text);}
+.btn.danger{border-color:#E24B4A;color:#A32D2D;}
+.btn.danger:hover{background:#FCEBEB;}
+.btn.sm{padding:6px 12px;font-size:12px;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--bg2);}
+td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#faf9f7;}
+
+/* BADGES */
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.b-purple{background:var(--purple-bg);color:var(--purple-text);}
+.b-teal{background:var(--teal-bg);color:var(--teal-text);}
+.b-blue{background:var(--blue-bg);color:var(--blue-text);}
+.b-amber{background:var(--amber-bg);color:var(--amber-text);}
+.b-coral{background:var(--coral-bg);color:var(--coral-text);}
+.b-gray{background:var(--bg2);color:var(--text2);}
+.b-green{background:var(--green-bg);color:var(--green-text);}
+.b-pink{background:var(--pink-bg);color:var(--pink-text);}
+
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;}
+.dot.yes{background:var(--teal);}.dot.no{background:#ccc;}
+
+/* FILTERS */
+.filter-row{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.filter-row input,.filter-row select{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);outline:none;}
+.filter-row input:focus,.filter-row select:focus{border-color:var(--purple);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:var(--rl);border:1px solid var(--border);padding:1.75rem;width:92%;max-width:620px;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.12);}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:1.25rem;color:var(--text);}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);}
+
+/* NOTES */
+.notes-layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.notes-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;}
+.notes-card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;padding-bottom:10px;}
+.nc-purple h3{color:var(--purple-text);border-bottom:2px solid var(--purple-bg);}
+.nc-teal h3{color:var(--teal-text);border-bottom:2px solid var(--teal-bg);}
+.todo-input-row{display:flex;gap:8px;margin-bottom:12px;}
+.todo-input-row input{flex:1;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);outline:none;}
+.todo-input-row input:focus{border-color:var(--purple);}
+.todo-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.todo-item:last-child{border-bottom:none;}
+.todo-item input[type=checkbox]{accent-color:var(--teal);width:15px;height:15px;}
+.todo-item span.done-text{text-decoration:line-through;color:var(--text2);}
+.todo-item button{margin-left:auto;background:none;border:none;cursor:pointer;font-size:14px;color:var(--text2);padding:2px 6px;}
+.todo-item button:hover{color:#A32D2D;}
+textarea.notes-area{width:100%;height:220px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);outline:none;resize:vertical;line-height:1.6;}
+textarea.notes-area:focus{border-color:var(--teal);}
+
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text2);}
+.link-cell a{color:var(--blue);text-decoration:none;font-size:12px;font-weight:600;}
+.link-cell a:hover{text-decoration:underline;}
+.jd-cell{max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;color:var(--purple);font-size:12px;font-weight:600;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--purple-text);color:#fff;font-size:13px;font-weight:600;padding:12px 20px;border-radius:var(--r);opacity:0;pointer-events:none;transition:opacity .2s;z-index:999;max-width:300px;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+#toast.show{opacity:1;}
+#toast.warn{background:var(--coral);}
+
+@media(max-width:640px){
+  .notes-layout{grid-template-columns:1fr;}
+  .pipeline{grid-template-columns:repeat(3,1fr);}
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .form-row{grid-template-columns:1fr;}
+  header{padding:14px 16px;}
+  .wrapper{padding:16px;}
+  .content-card{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Job Hunting (Artemis 2.Pam)</h1>
+  <span>Your journey to the perfect role</span>
+</header>
+
+<div class="wrapper">
+  <nav>
+    <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
+    <button onclick="switchTab('applications',this)">Applications</button>
+    <button onclick="switchTab('notes',this)">Notes & Wishlist</button>
+  </nav>
+
+  <div class="content-card">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="panel active">
+      <p class="section-title">Your job hunt snapshot</p>
+      <div class="stat-grid" id="stat-grid"></div>
+      <p class="sub-label">Pipeline</p>
+      <div class="pipeline" id="pipeline"></div>
+      <p class="sub-label">Recent applications</p>
+      <div class="table-wrap" id="recent-table"></div>
+    </div>
+
+    <!-- APPLICATIONS -->
+    <div id="tab-applications" class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <p class="section-title" style="margin:0;">Applications</p>
+        <button class="btn primary" onclick="openAddModal()">+ Add application</button>
+      </div>
+      <div class="filter-row">
+        <input type="text" id="search-input" placeholder="Search company or role..." oninput="renderTable()" style="min-width:200px;">
+        <select id="filter-stage" onchange="renderTable()">
+          <option value="">All stages</option>
+          <option value="phone">HR phone call</option>
+          <option value="r1">Round 1</option>
+          <option value="r2">Round 2</option>
+          <option value="offer">Offer</option>
+        </select>
+        <select id="filter-referral" onchange="renderTable()">
+          <option value="">All types</option>
+          <option value="yes">Referral</option>
+          <option value="no">No referral</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Company</th><th>Link</th><th>Referral</th>
+              <th>JD</th><th>Phone</th><th>R1</th><th>R2+</th><th>Offer</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="app-table-body"></tbody>
+        </table>
+        <div id="table-empty" class="empty-state" style="display:none;">
+          <p style="font-size:15px;font-weight:500;margin-bottom:4px;">No applications yet</p>
+          <p style="font-size:13px;">Click "Add application" to log your first one!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div id="tab-notes" class="panel">
+      <p class="section-title">Notes & Wishlist</p>
+      <div class="notes-layout">
+        <div class="notes-card nc-purple">
+          <h3>Companies I'd love to work for</h3>
+          <div class="todo-input-row">
+            <input type="text" id="wishlist-input" placeholder="Add a company..." onkeydown="if(event.key==='Enter')addWishlist()">
+            <button class="btn sm primary" onclick="addWishlist()">Add</button>
+          </div>
+          <div id="wishlist-items"></div>
+        </div>
+        <div class="notes-card nc-teal">
+          <h3>My notes</h3>
+          <textarea class="notes-area" id="notes-area" placeholder="Jot down tips, contacts, thoughts on your search..." oninput="saveNotes()"></textarea>
+          <p style="font-size:11px;color:var(--text2);margin-top:8px;">Auto-saved to your browser</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="app-modal">
+  <div class="modal">
+    <h2 id="modal-title">Add application</h2>
+    <p class="sub-label">Basic info</p>
+    <div class="form-row">
+      <div class="field"><label>Company *</label><input type="text" id="f-company" placeholder="e.g. Apple Cork"><span class="err-msg" id="e-company"></span></div>
+      <div class="field"><label>Date applied *</label><input type="date" id="f-date"><span class="err-msg" id="e-date"></span></div>
+    </div>
+    <div class="form-row full">
+      <div class="field"><label>Link to application</label><input type="url" id="f-link" placeholder="https://..."><span class="err-msg" id="e-link"></span></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Referral name (if any)</label><input type="text" id="f-referral" placeholder="Leave blank if none"></div>
+      <div class="field"><label>Role / Job title</label><input type="text" id="f-role" placeholder="e.g. Product Manager"></div>
+    </div>
+    <div class="form-row full">
+      <div class="field">
+        <label>Job description notes</label>
+        <textarea id="f-jd" rows="3" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);outline:none;resize:vertical;width:100%;" placeholder="Paste key requirements or notes..."></textarea>
+      </div>
+    </div>
+
+    <p class="sub-label" style="margin-top:1.25rem;">Interview stages</p>
+    <div class="stages-grid" id="stages-container"></div>
+    <button class="btn sm" style="margin-top:12px;" onclick="addExtraRound()">+ Add extra round</button>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveApplication()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- JD MODAL -->
+<div class="modal-overlay" id="jd-modal">
+  <div class="modal">
+    <h2 id="jd-modal-company">Job description notes</h2>
+    <p id="jd-modal-text" style="font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--text);"></p>
+    <div class="modal-footer"><button class="btn" onclick="document.getElementById('jd-modal').classList.remove('open')">Close</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let apps = JSON.parse(localStorage.getItem('corkJobsV2') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('corkWishV2') || '[]');
+let editId = null, extraRounds = [];
+
+function save() { localStorage.setItem('corkJobsV2', JSON.stringify(apps)); }
+function saveWishlist() { localStorage.setItem('corkWishV2', JSON.stringify(wishlist)); }
+function saveNotes() { localStorage.setItem('corkNotesV2', document.getElementById('notes-area').value); }
+
+function toast(msg, warn) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show' + (warn ? ' warn' : '');
+  setTimeout(() => t.className = '', 2800);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'applications') renderTable();
+  if (tab === 'notes') renderNotes();
+}
+
+function fmt(d) {
+  if (!d) return '—';
+  return new Date(d + 'T12:00:00').toLocaleDateString('en-IE', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function stageBadge(a) {
+  if (a.stages.offer?.done) return '<span class="badge b-green">Offer</span>';
+  const extras = Object.keys(a.stages).filter(k => k.startsWith('extra_') && a.stages[k]?.done);
+  if (extras.length || a.stages.r2?.done) return '<span class="badge b-purple">Round 2+</span>';
+  if (a.stages.r1?.done) return '<span class="badge b-blue">Round 1</span>';
+  if (a.stages.phone?.done) return '<span class="badge b-amber">HR call</span>';
+  return '<span class="badge b-gray">Applied</span>';
+}
+
+function renderDashboard() {
+  const total = apps.length;
+  const phones = apps.filter(a => a.stages.phone?.done).length;
+  const r1 = apps.filter(a => a.stages.r1?.done).length;
+  const r2 = apps.filter(a => a.stages.r2?.done).length;
+  const offers = apps.filter(a => a.stages.offer?.done).length;
+  const refs = apps.filter(a => a.referral).length;
+  const phonePct = total ? Math.round(phones / total * 100) : 0;
+  const offerFromPhone = phones ? Math.round(offers / phones * 100) : 0;
+  const offerFromTotal = total ? Math.round(offers / total * 100) : 0;
+
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-card sc-purple"><div class="stat-label">Total applied</div><div class="stat-value">${total}</div><div class="stat-sub">applications logged</div></div>
+    <div class="stat-card sc-amber"><div class="stat-label">HR calls</div><div class="stat-value">${phonePct}<span style="font-size:18px;">%</span></div><div class="stat-sub">${phones} of ${total}</div></div>
+    <div class="stat-card sc-coral"><div class="stat-label">Offers / calls</div><div class="stat-value">${offerFromPhone}<span style="font-size:18px;">%</span></div><div class="stat-sub">${offers} of ${phones}</div></div>
+    <div class="stat-card sc-teal"><div class="stat-label">Offer rate</div><div class="stat-value">${offerFromTotal}<span style="font-size:18px;">%</span></div><div class="stat-sub">${offers} of ${total}</div></div>
+    <div class="stat-card sc-blue"><div class="stat-label">Referrals</div><div class="stat-value">${refs}</div><div class="stat-sub">of ${total} applications</div></div>
+  `;
+
+  document.getElementById('pipeline').innerHTML = `
+    <div class="pipe-stage ps-purple"><div class="num">${total}</div><div class="lbl">Applied</div></div>
+    <div class="pipe-stage ps-amber"><div class="num">${phones}</div><div class="lbl">HR call</div></div>
+    <div class="pipe-stage ps-blue"><div class="num">${r1}</div><div class="lbl">Round 1</div></div>
+    <div class="pipe-stage ps-teal"><div class="num">${r2}</div><div class="lbl">Round 2</div></div>
+    <div class="pipe-stage ps-green"><div class="num">${offers}</div><div class="lbl">Offer</div></div>
+  `;
+
+  const recent = [...apps].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  if (!recent.length) {
+    document.getElementById('recent-table').innerHTML = '<div class="empty-state"><p style="font-size:14px;font-weight:500;">No applications yet — add your first!</p></div>';
+    return;
+  }
+  document.getElementById('recent-table').innerHTML = `
+    <table><thead><tr><th>Date</th><th>Company</th><th>Role</th><th>Stage</th><th>Offer</th></tr></thead>
+    <tbody>${recent.map(a => `<tr>
+      <td style="font-size:12px;color:var(--text2);white-space:nowrap;">${fmt(a.date)}</td>
+      <td><strong>${a.company}</strong></td>
+      <td style="color:var(--text2);font-size:12px;">${a.role || '—'}</td>
+      <td>${stageBadge(a)}</td>
+      <td><span class="dot ${a.stages.offer?.done ? 'yes' : 'no'}"></span>${a.stages.offer?.done ? 'Yes' : '—'}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+function renderTable() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const stg = document.getElementById('filter-stage')?.value || '';
+  const ref = document.getElementById('filter-referral')?.value || '';
+
+  let filtered = apps.filter(a => {
+    if (q && !a.company.toLowerCase().includes(q) && !(a.role || '').toLowerCase().includes(q)) return false;
+    if (stg === 'phone' && !a.stages.phone?.done) return false;
+    if (stg === 'r1' && !a.stages.r1?.done) return false;
+    if (stg === 'r2' && !a.stages.r2?.done) return false;
+    if (stg === 'offer' && !a.stages.offer?.done) return false;
+    if (ref === 'yes' && !a.referral) return false;
+    if (ref === 'no' && a.referral) return false;
+    return true;
+  }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const tbody = document.getElementById('app-table-body');
+  const empty = document.getElementById('table-empty');
+  if (!filtered.length) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = filtered.map(a => {
+    const extraKeys = Object.keys(a.stages).filter(k => k.startsWith('extra_'));
+    const extraDone = extraKeys.filter(k => a.stages[k]?.done).length;
+    return `<tr>
+      <td style="white-space:nowrap;font-size:12px;color:var(--text2);">${fmt(a.date)}</td>
+      <td><strong style="font-size:13px;">${a.company}</strong>${a.role ? `<br><span style="font-size:11px;color:var(--text2);">${a.role}</span>` : ''}</td>
+      <td class="link-cell">${a.link ? `<a href="${a.link}" target="_blank">View ↗</a>` : '—'}</td>
+      <td>${a.referral ? `<span class="badge b-pink">${a.referral}</span>` : '<span style="color:var(--text2);font-size:12px;">—</span>'}</td>
+      <td class="jd-cell" onclick="showJD('${a.id}')">${a.jd ? 'View notes' : '—'}</td>
+      <td><span class="dot ${a.stages.phone?.done ? 'yes' : 'no'}"></span>${a.stages.phone?.done ? fmt(a.stages.phone.date) || 'Yes' : '—'}</td>
+      <td><span class="dot ${a.stages.r1?.done ? 'yes' : 'no'}"></span>${a.stages.r1?.done ? fmt(a.stages.r1.date) || 'Yes' : '—'}</td>
+      <td>${extraKeys.length ? `<span class="badge b-coral">${extraDone}/${extraKeys.length}</span>` : a.stages.r2?.done ? `<span class="dot yes"></span>${fmt(a.stages.r2.date) || 'Yes'}` : '—'}</td>
+      <td>${a.stages.offer?.done ? '<span class="badge b-green">Yes</span>' : '—'}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn sm" onclick="openEditModal('${a.id}')">Edit</button>
+        <button class="btn sm danger" onclick="deleteApp('${a.id}')" style="margin-left:4px;">Del</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function showJD(id) {
+  const a = apps.find(x => x.id === id);
+  if (!a || !a.jd) return;
+  document.getElementById('jd-modal-company').textContent = a.company + ' — JD notes';
+  document.getElementById('jd-modal-text').textContent = a.jd;
+  document.getElementById('jd-modal').classList.add('open');
+}
+
+function deleteApp(id) {
+  if (!confirm('Delete this application?')) return;
+  apps = apps.filter(a => a.id !== id);
+  save(); renderTable(); renderDashboard();
+  toast('Application deleted');
+}
+
+const DEFAULT_STAGES = [
+  { key: 'phone', label: 'HR phone call' },
+  { key: 'r1', label: 'Round 1 interview' },
+  { key: 'r2', label: 'Round 2 interview' },
+  { key: 'offer', label: 'Offer received' }
+];
+const STAGE_DONE_CLASS = { phone: 'phone-done', r1: 'r1-done', r2: 'r2-done', offer: 'offer-done' };
+
+function buildStageUI(existingStages) {
+  const container = document.getElementById('stages-container');
+  const allStages = [...DEFAULT_STAGES, ...extraRounds.map((r, i) => ({ key: `extra_${i}`, label: r }))];
+  container.innerHTML = allStages.map(s => {
+    const data = existingStages?.[s.key] || {};
+    const doneClass = STAGE_DONE_CLASS[s.key] || 'extra-done';
+    return `<label class="stage-item ${data.done ? doneClass : ''}" id="sl-${s.key}">
+      <input type="checkbox" ${data.done ? 'checked' : ''} onchange="toggleStage('${s.key}','${doneClass}',this)">
+      <span>${s.label}</span>
+      <input type="date" id="sd-${s.key}" value="${data.date || ''}" style="display:${data.done ? 'block' : 'none'};font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;width:120px;margin-left:auto;" onclick="event.stopPropagation()">
+    </label>`;
+  }).join('');
+}
+
+function toggleStage(key, doneClass, cb) {
+  const label = document.getElementById('sl-' + key);
+  const dateInput = document.getElementById('sd-' + key);
+  if (cb.checked) {
+    label.className = 'stage-item ' + doneClass;
+    dateInput.style.display = 'block';
+    if (!dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+  } else {
+    label.className = 'stage-item';
+    dateInput.style.display = 'none';
+    dateInput.value = '';
+  }
+}
+
+function addExtraRound() {
+  extraRounds.push(`Round ${DEFAULT_STAGES.length + extraRounds.length} interview`);
+  buildStageUI(null);
+}
+
+function openAddModal() {
+  editId = null; extraRounds = [];
+  document.getElementById('modal-title').textContent = 'Add application';
+  ['f-company', 'f-date', 'f-link', 'f-referral', 'f-role', 'f-jd'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  ['e-company', 'e-date', 'e-link'].forEach(id => document.getElementById(id).textContent = '');
+  buildStageUI(null);
+  document.getElementById('app-modal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const a = apps.find(x => x.id === id); if (!a) return;
+  editId = id;
+  extraRounds = Object.keys(a.stages).filter(k => k.startsWith('extra_')).map(k => a.stages[k].label || `Round ${DEFAULT_STAGES.length + parseInt(k.split('_')[1]) + 1} interview`);
+  document.getElementById('modal-title').textContent = 'Edit application';
+  document.getElementById('f-company').value = a.company;
+  document.getElementById('f-date').value = a.date;
+  document.getElementById('f-link').value = a.link || '';
+  document.getElementById('f-referral').value = a.referral || '';
+  document.getElementById('f-role').value = a.role || '';
+  document.getElementById('f-jd').value = a.jd || '';
+  buildStageUI(a.stages);
+  document.getElementById('app-modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('app-modal').classList.remove('open'); }
+
+function saveApplication() {
+  const company = document.getElementById('f-company').value.trim();
+  const date = document.getElementById('f-date').value;
+  const link = document.getElementById('f-link').value.trim();
+  let valid = true;
+
+  if (!company) { document.getElementById('e-company').textContent = 'Company name is required'; document.getElementById('f-company').classList.add('err'); valid = false; }
+  else { document.getElementById('e-company').textContent = ''; document.getElementById('f-company').classList.remove('err'); }
+
+  if (!date) { document.getElementById('e-date').textContent = 'Date is required'; document.getElementById('f-date').classList.add('err'); valid = false; }
+  else { document.getElementById('e-date').textContent = ''; document.getElementById('f-date').classList.remove('err'); }
+
+  if (link && !link.startsWith('http')) { document.getElementById('e-link').textContent = 'Please enter a valid URL starting with http'; document.getElementById('f-link').classList.add('err'); valid = false; }
+  else { document.getElementById('e-link').textContent = ''; document.getElementById('f-link').classList.remove('err'); }
+
+  if (!valid) return;
+
+  const dup = apps.find(a => a.company.toLowerCase() === company.toLowerCase() && a.date === date && a.id !== editId);
+  if (dup) { toast('Duplicate detected: ' + company + ' on ' + fmt(date) + ' already exists!', true); return; }
+
+  const allStageKeys = [...DEFAULT_STAGES.map(s => s.key), ...extraRounds.map((_, i) => `extra_${i}`)];
+  const stages = {};
+  allStageKeys.forEach((key, idx) => {
+    const cb = document.querySelector(`#sl-${key} input[type=checkbox]`);
+    const dt = document.getElementById('sd-' + key);
+    if (cb?.checked) stages[key] = { done: true, date: dt?.value || '', label: extraRounds[idx - DEFAULT_STAGES.length] || null };
+  });
+
+  if (editId) {
+    const idx = apps.findIndex(a => a.id === editId);
+    apps[idx] = { ...apps[idx], company, date, link, referral: document.getElementById('f-referral').value.trim(), role: document.getElementById('f-role').value.trim(), jd: document.getElementById('f-jd').value.trim(), stages };
+    toast('Application updated!');
+  } else {
+    apps.push({ id: Date.now().toString(), company, date, link, referral: document.getElementById('f-referral').value.trim(), role: document.getElementById('f-role').value.trim(), jd: document.getElementById('f-jd').value.trim(), stages });
+    toast('Application added — good luck!');
+  }
+  save(); closeModal(); renderTable(); renderDashboard();
+}
+
+function renderNotes() {
+  document.getElementById('notes-area').value = localStorage.getItem('corkNotesV2') || '';
+  renderWishlist();
+}
+
+function addWishlist() {
+  const inp = document.getElementById('wishlist-input');
+  const val = inp.value.trim(); if (!val) return;
+  wishlist.push({ id: Date.now().toString(), text: val, done: false });
+  inp.value = ''; saveWishlist(); renderWishlist();
+}
+
+function renderWishlist() {
+  const c = document.getElementById('wishlist-items');
+  if (!wishlist.length) { c.innerHTML = '<p style="font-size:12px;color:var(--text2);text-align:center;padding:1rem 0;">No companies added yet</p>'; return; }
+  c.innerHTML = wishlist.map(w => `
+    <div class="todo-item">
+      <input type="checkbox" ${w.done ? 'checked' : ''} onchange="toggleWishlist('${w.id}')">
+      <span class="${w.done ? 'done-text' : ''}">${w.text}</span>
+      <button onclick="removeWishlist('${w.id}')">✕</button>
+    </div>`).join('');
+}
+
+function toggleWishlist(id) { const w = wishlist.find(x => x.id === id); if (w) { w.done = !w.done; saveWishlist(); renderWishlist(); } }
+function removeWishlist(id) { wishlist = wishlist.filter(x => x.id !== id); saveWishlist(); renderWishlist(); }
+
+renderDashboard();
+</script>
+</body>
+</html>
